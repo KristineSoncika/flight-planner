@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightPlanner", "FlightPlanner.csproj", "{87CB80AA-164C-4C2C-8543-2E7996EFE806}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87CB80AA-164C-4C2C-8543-2E7996EFE806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87CB80AA-164C-4C2C-8543-2E7996EFE806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87CB80AA-164C-4C2C-8543-2E7996EFE806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87CB80AA-164C-4C2C-8543-2E7996EFE806}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
