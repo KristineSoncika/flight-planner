@@ -6,13 +6,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace FlightPlanner.Filters;
+namespace FlightPlanner.Handlers;
 
 public class BasicAuthorisationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    public BasicAuthorisationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
-    {
-    }
+    public BasicAuthorisationHandler(
+        IOptionsMonitor<AuthenticationSchemeOptions> options, 
+        ILoggerFactory logger, 
+        UrlEncoder encoder, 
+        ISystemClock clock) : base(options, logger, encoder, clock) { }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {

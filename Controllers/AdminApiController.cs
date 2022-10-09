@@ -25,7 +25,7 @@ public class AdminApiController : ControllerBase
     }
     
     [HttpPut]
-    public IActionResult PutFlights(Flight flight)
+    public IActionResult AddFlight(AddFlight flight)
     {
         if (AdminApiValidator.HasInvalidValues(flight) || 
             AdminApiValidator.IsWrongDate(flight) || 
@@ -38,29 +38,16 @@ public class AdminApiController : ControllerBase
         {
             return Conflict();
         }
-
-        flight = FlightRepository.AddFlight(flight);
-        return Created( "", flight);
+        
+        return Created( "",  FlightRepository.AddFlight(flight));
     }
     
     [Route("{id:int}")]
     [HttpDelete]
-    public IActionResult DeleteFlights(int id)
+    public IActionResult DeleteFlight(int id)
     {
-        var flight = FlightRepository.GetFlight(id);
+        FlightRepository.DeleteFlight(id);
 
-        if (flight == null)
-        {
-            return Ok();
-        }
-        
-        flight = FlightRepository.DeleteFlight(flight);
-        
-        if (flight == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(flight);
+        return Ok();
     }
 }

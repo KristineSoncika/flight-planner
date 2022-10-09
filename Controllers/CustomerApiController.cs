@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using FlightPlanner.Models;
 using FlightPlanner.Repositories;
 using FlightPlanner.Validations;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol;
 
 namespace FlightPlanner.Controllers;
 

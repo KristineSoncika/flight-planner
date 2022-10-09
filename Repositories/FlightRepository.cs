@@ -6,42 +6,58 @@ public static class FlightRepository
 {
     private static readonly object _flightsLock = new();
     private static readonly List<Flight> _flights = new();
-    private static int _id = 1;
+    private static int _id;
 
-    public static Flight AddFlight(Flight flight)
+    public static Flight AddFlight(AddFlight request)
     {
         lock (_flightsLock)
         {
+            var flight = new Flight
+            {
+                Id = ++_id,
+                ArrivalTime = request.ArrivalTime,
+                Carrier = request.Carrier,
+                DepartureTime = request.DepartureTime,
+                From = request.From,
+                To = request.To
+            };
             _flights.Add(flight);
+
+            return flight;
         }
-        
-        flight.Id = _id++;
-        return flight;
     }
 
     public static Flight GetFlight(int id)
     {
         lock (_flightsLock)
         {
-            return _flights.FirstOrDefault(flight => flight.Id == id);
+            return _flights.SingleOrDefault(flight => flight.Id == id);
         }
     }
 
-    public static Flight DeleteFlight(Flight flight)
+    public static void DeleteFlight(int id)
     {
-        lock (_flightsLock)
-        {
-            _flights.Remove(flight);
-        }
+        var flight = GetFlight(id);
         
-        return flight;
+        lock (_flightsLock)
+        {
+            if (flight != null)
+            {
+                _flights.Remove(flight);
+            }
+        }
     }
 
-    public static bool FlightAlreadyExists(Flight flight)
+    public static bool FlightAlreadyExists(AddFlight request)
     {
         lock (_flightsLock)
         {
-            return _flights.Exists(f => f.Equals(flight));
+            return _flights.Any(flight => flight.ArrivalTime == request.ArrivalTime && 
+                                          flight.DepartureTime == request.DepartureTime && 
+                                          string.Equals(flight.From.AirportCode, request.From.AirportCode, 
+                                              StringComparison.CurrentCultureIgnoreCase) && 
+                                          string.Equals(flight.To.AirportCode,request.To.AirportCode, 
+                                              StringComparison.CurrentCultureIgnoreCase));
         }
     }
 
@@ -51,9 +67,8 @@ public static class FlightRepository
         _id = 1;
     }
 
-    public static Airport[] FindAirport(string phrase)
+    public static List<Airport> FindAirport(string phrase)
     {
-
         var airports = new List<Airport>();
         var formattedPhrase = phrase.ToLower().Trim();
         
@@ -64,7 +79,7 @@ public static class FlightRepository
                 flight.From.AirportCode.ToLower().Contains(formattedPhrase))
             {
                 airports.Add(flight.From);
-                return airports.ToArray();
+                return airports.ToList();
             }
     
             if (flight.To.City.ToLower().Contains(formattedPhrase) ||
@@ -72,32 +87,22 @@ public static class FlightRepository
                 flight.To.AirportCode.ToLower().Contains(formattedPhrase))
             {
                 airports.Add(flight.To);
-                return airports.ToArray();
+                return airports.ToList();
             }
         }
         
-        return airports.ToArray();
+        return airports.ToList();
     }
 
-    public static PageResult SearchFlight(FlightSearch flightSearch)
+    public static PageResult SearchFlight(FlightSearch search)
     {
-        var page = 0;
-        var totalItems = 0;
-        var items = new List<Flight>();
-        
-        foreach (var flight in _flights)
-        {
-            if (flight.From.AirportCode == flightSearch.From &&
-                flight.To.AirportCode == flightSearch.To &&
-                flight.DepartureTime[..10] == flightSearch.DepartureDate)
-            {
-                items.Add(flight);
-                totalItems++;
-                page++;
-            }
-        }
-
-        var pageResult = new PageResult(page, totalItems, items.ToArray());
-        return pageResult;
+        var result = new PageResult();
+        var flights = _flights.Where(flight =>
+            flight.DepartureTime.Contains(search.DepartureDate) &&
+            flight.From.AirportCode.ToLower().Contains(search.From.ToLower().Trim()) &&
+            flight.To.AirportCode.ToLower().Contains(search.To.ToLower().Trim())).ToList();
+        result.Items = flights;
+        result.TotalItems = flights.Count;
+        return result;
     }
 }

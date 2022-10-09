@@ -1,4 +1,4 @@
-using FlightPlanner.Filters;
+using FlightPlanner.Handlers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
 
